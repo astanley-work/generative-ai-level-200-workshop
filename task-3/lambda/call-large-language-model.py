@@ -5,6 +5,8 @@ import uuid
 from opensearchpy import OpenSearch, RequestsHttpConnection, AWSV4SignerAuth
 import pandas as pd
 
+# How to install opensearch-py as a lambda layer (see virtual environment step): https://docs.aws.amazon.com/lambda/latest/dg/python-package.html
+
 # Write function to take request from user and return relevant vector store documents
 def get_relevant_vector_store_documents(user_request_string):
 
