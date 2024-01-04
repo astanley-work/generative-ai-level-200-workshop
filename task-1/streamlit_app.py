@@ -4,6 +4,8 @@ import time
 import requests
 import json
 
+# How to install streamlit and run this file: https://docs.streamlit.io/get-started/installation/command-line
+
 ### APPLICATION SETUP
 api_gateway_endpoint = # ADD API GATEWAY ENDPOINT HERE
 api_gateawy_api_key = # ADD YOUR API KEY HERE
