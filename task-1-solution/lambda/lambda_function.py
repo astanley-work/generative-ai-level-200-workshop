@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     # Create client to connect to Amazon Bedrock
     bedrock_client = boto3.client(
         service_name='bedrock-runtime',
-        region_name='us-west-2'
+        region_name='us-east-1'
     )
     
     json_version = json.loads(event['body'])
