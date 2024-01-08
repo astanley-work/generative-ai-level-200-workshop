@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     # Create client to connect to Amazon Bedrock
     bedrock_client = boto3.client(
         service_name='bedrock-runtime',
-        region_name='us-west-2'
+        region_name='us-east-1'
     )
     
     json_version = json.loads(event['body'])
@@ -27,19 +27,24 @@ def lambda_handler(event, context):
     # Configuration
     prompt = "You are a helpful support bot for the Call Center Co. customer support team. One of our agents just asked you a question: " + user_request + " Please keep your response short and to the point."
     
-    model_id = "anthropic.claude-instant-v1"
+    model_id = "meta.llama2-70b-chat-v1"
 
     kwargs = {
       "modelId": model_id,
       "contentType": "application/json",
       "accept": "*/*",
-      "body": "{\"prompt\":\"Human: " + prompt + " \\nAssistant:\",\"max_tokens_to_sample\":1000,\"temperature\":1,\"top_k\":250,\"top_p\":0.999,\"stop_sequences\":[\"\\n\\nHuman:\"],\"anthropic_version\":\"bedrock-2023-05-31\"}"
+      "body": "{\"prompt\":\"Human: " + prompt + " \\nAssistant:\",\"max_gen_len\":512,\"temperature\": 0.2,\"top_p\":0.999}"
     }
 
     # Invoke bedrock API
     response = bedrock_client.invoke_model(**kwargs)
+    print("Raw response: ", response)
     response_body = json.loads(response.get('body').read())
-    completion = response_body['completion']
+    print("Response body: ", response_body)
+    completion = response_body['generation']
+
+    input_tokens = response_body['prompt_token_count']
+    output_tokens = response_body['generation_token_count']
 
     ### DynamoDB
     # Log number of request and response tokens to DynamoDB Table
@@ -48,13 +53,13 @@ def lambda_handler(event, context):
     # Generate uuid and other config
     user_id = uuid.uuid4()
     timestamp = datetime.datetime.now()
-    input_tokens = count_tokens(prompt)
-    output_tokens = count_tokens(completion)
+    input_tokens = response_body['prompt_token_count'] # input_tokens = count_tokens(prompt)
+    output_tokens = response_body['generation_token_count'] # output_tokens = count_tokens(completion)
     application_name = "internal-support-chatbot"
 
     # Put metadata in DDB
     ddb_response = dynamodb_client.put_item(
-        TableName='call-center-co-chatbot-logging',
+        TableName='new-york-demo-task-1-table',
         Item={
             'session_id': {'S': str(user_id)},
             'time_stamp': {'S': str(timestamp)},
