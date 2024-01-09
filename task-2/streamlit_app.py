@@ -20,7 +20,7 @@ def call_API_Gateway(user_request):
     return response
 
 ### LLM APP
-st.title("Call Center Co. LLM Chatbot")
+st.title("Call Center Co. LLM Chatbot - Task 2")
 
 # Initialize chat history
 if "messages" not in st.session_state:
