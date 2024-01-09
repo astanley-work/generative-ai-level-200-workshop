@@ -45,7 +45,7 @@ for row in headsets_dataframe.iterrows():
         print("Documents Embedded: ", i)
         print("Vector: ", vectors[i])
 
-    if (i == 10):
+    if (i == 1000):
         break
     
     i+=1
