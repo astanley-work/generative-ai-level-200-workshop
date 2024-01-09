@@ -22,14 +22,6 @@ Your colleague, ever eager, has already written the front-end for a Generative A
 
 Regarding DynamoDB, we recommend logging the following information
 
-'session_id’: # PARTITION KEY - A unique identifier for the request (e.g. uuid)
-'time_stamp’: # SORT KEY - The date and time of the request
-'model_id’: # The name of the Bedrock model used in request
-'application_name’: # The name of the app we are requesting (chatbot)
-'input_tokens’: # Number of tokens in the customer request
-'output_tokens’: # Number of output tokens
-'prompt_text’: # Input text (to llm)
-'completion_text’: # Output text (from llm)
 ![image](https://github.com/astanley-work/generative-ai-level-200-workshop/assets/77308012/6027ca4c-a5d5-45f3-a791-a59b49ad9acb)
 
 ## Scenario - Part 2:
