@@ -31,18 +31,11 @@ def count_tokens(input_string):
 
 def lambda_handler(event, context):
 
-    ### OPENSEARCH
-    # Create client to connect to OpenSearch
-    opensearch_client = boto3.client(
-        service_name='opensearch',
-        region_name='us-west-2'
-    )
-
     ### BEDROCK
     # Create client to connect to Amazon Bedrock
     bedrock_client = boto3.client(
         service_name='bedrock-runtime',
-        region_name='us-west-2'
+        region_name='us-east-1'
     )
     
     json_version = json.loads(event['body'])
@@ -50,13 +43,19 @@ def lambda_handler(event, context):
 
     # Query OpenSearch Cluster for information relevant to user query
     opensearch_results = get_relevant_vector_store_documents(user_request)
+    print("OpenSearch Results: ", opensearch_results)
 
-    result_1 = opensearch_results[0]
-    result_2 = opensearch_results[1]
-    result_3 = opensearch_results[2]
+    result_1_question = opensearch_results[0][2]
+    result_1_answer = opensearch_results[0][3]
+
+    result_2_question = opensearch_results[1][2]
+    result_2_answer = opensearch_results[1][3]
+
+    result_3_question = opensearch_results[2][2]
+    result_3_answer = opensearch_results[2][3]
     
     # Configuration
-    prompt = "You are a helpful support bot for the Call Center Co. customer support team. One of our agents just asked you a question: " + user_request + " Please keep your response short and to the point. The following information may also be useful in your response " + result_1 + ", " + result_2 + ", " + result_3
+    prompt = "You are a helpful support bot for the Call Center Co. customer support team. One of our agents just asked you a question: " + user_request + " Please keep your response short and to the point. The following information may also be useful in your response: Question 1 - " + result_1_question + ", Answer 1 - " + result_1_answer + ", Question 2 - " + result_2_question + ", Answer 2 - " + result_2_answer + ", Question 3 - " + result_3_question + ", Answer 3 - " + result_3_answer
     
     model_id = "anthropic.claude-v2:1"
 
@@ -72,6 +71,8 @@ def lambda_handler(event, context):
     response_body = json.loads(response.get('body').read())
     completion = response_body['completion']
 
+    print("Completion: ", completion)
+
     ### DynamoDB
     # Log number of request and response tokens to DynamoDB Table
     dynamodb_client = boto3.client('dynamodb')
@@ -85,16 +86,16 @@ def lambda_handler(event, context):
 
     # Put metadata in DDB
     ddb_response = dynamodb_client.put_item(
-        TableName='call-center-co-chatbot-logging',
+        TableName='new-york-demo-task-1-table',
         Item={
             'session_id': {'S': str(user_id)},
             'time_stamp': {'S': str(timestamp)},
             'model_id': {'S': str(model_id)},
             'application_name': {'S': str(application_name)},
-            'input_tokens': {'N': str(input_tokens)},
-            'output_tokens': {'N': str(output_tokens)},
-            'prompt_text':  {'N': str(prompt)},
-            'completion_text':  {'N': str(completion)}
+            'input_tokens': {'S': str(input_tokens)},
+            'output_tokens': {'S': str(output_tokens)},
+            'prompt_text':  {'S': str(prompt)},
+            'completion_text':  {'S': str(completion)}
         }
     )
 
