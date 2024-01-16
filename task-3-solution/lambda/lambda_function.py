@@ -34,10 +34,10 @@ def get_relevant_vector_store_documents(user_request_string):
 
     # Step 2 - query vector store for relevant documents
     region = 'us-east-1' 
-    aos_host = "search-new-york-task-3-demo-domain-hxscangjusa5ttlk4kogqnrin4.aos.us-east-1.on.aws"
+    aos_host = # Add your host URL
 
-    username = "admin"
-    password = "$Password123"
+    username = # Add your username
+    password = # Add your password
 
     auth = (username, password)
 

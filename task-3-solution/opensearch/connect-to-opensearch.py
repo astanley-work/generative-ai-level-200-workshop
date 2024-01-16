@@ -55,10 +55,10 @@ print("Documents Embedded")
 
 # STEP 3 - Create connection to OpenSearch cluster
 region = 'us-east-1' 
-aos_host = "search-new-york-task-3-demo-domain-hxscangjusa5ttlk4kogqnrin4.aos.us-east-1.on.aws" # Note - do not include "https://" at the start
+aos_host = # Add your url # Note - do not include "https://" at the start
 
-username = "admin"
-password = "$Password123"
+username = # Add your username
+password = # Add your password
 
 auth = (username, password)
 
